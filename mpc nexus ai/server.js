@@ -1,61 +1,73 @@
 const express = require("express");
 const cors = require("cors");
-const Groq = require("groq-sdk");
-require("dotenv").config();
+const dotenv = require("dotenv");
+const OpenAI = require("openai");
+
+dotenv.config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const groq = new Groq({
-apiKey: process.env.GROQ_API_KEY,
+const client = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
 });
 
 app.post("/ask", async (req, res) => {
 
-try {
+  try {
 
-const question = req.body.question;
+    const userQuestion = req.body.question;
 
-const completion =
-await groq.chat.completions.create({
+    const completion =
+    await client.chat.completions.create({
 
-messages: [
+      model:
+      "mistralai/mistral-7b-instruct:free",
 
-{
-role: "system",
-content:
-"You are MPC Nexus AI, an expert tutor for 11th and 12th MPC students. Explain step-by-step clearly.",
-},
+      messages: [
 
-{
-role: "user",
-content: question,
-},
+        {
+          role: "system",
+          content:
+          "You are MPC Nexus AI, a smart educational assistant for Maths, Physics and Chemistry students."
+        },
 
-],
+        {
+          role: "user",
+          content: userQuestion
+        }
 
-model: "llama-3.3-70b-versatile",
+      ],
+
+    });
+
+    res.json({
+      answer:
+      completion.choices[0].message.content
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.json({
+      answer:
+      "AI error"
+    });
+
+  }
 
 });
 
-res.json({
-answer: completion.choices[0].message.content,
-});
+const PORT = 3000;
 
-} catch (error) {
+app.listen(PORT, () => {
 
-console.log(error);
+  console.log(
+    "🚀 MPC Nexus AI running with OpenRouter"
+  );
 
-res.status(500).json({
-answer: "AI Error",
-});
-
-}
-
-});
-
-app.listen(3000, () => {
-console.log("🚀 MPC Nexus AI running with Groq");
 });
