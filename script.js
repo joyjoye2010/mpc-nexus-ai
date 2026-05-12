@@ -16,7 +16,8 @@ box.innerHTML =
 try{
 
 const response =
-await fetch("https://mpc-nexus-ai-f6kt.onrender.com/ask",
+await fetch(
+"https://mpc-nexus-ai-f6kt.onrender.com/ask",
 {
 method:"POST",
 
@@ -50,6 +51,10 @@ box.innerHTML =
 
 
 
+/* =========================
+   TYPE EFFECT
+========================= */
+
 function typeEffect(
 text,
 element
@@ -78,6 +83,10 @@ clearInterval(interval);
 }
 
 
+
+/* =========================
+   PARTICLES BACKGROUND
+========================= */
 
 tsParticles.load(
 "particles-js",
@@ -123,7 +132,9 @@ color:"transparent",
 
 
 
-
+/* =========================
+   QUIZ QUESTIONS
+========================= */
 
 const questionPools = {
 
@@ -152,8 +163,6 @@ math:[
 
 ],
 
-
-
 physics:[
 
 "What is Newton's Second Law?",
@@ -178,8 +187,6 @@ physics:[
 "What is wave motion?"
 
 ],
-
-
 
 chemistry:[
 
@@ -211,9 +218,11 @@ chemistry:[
 
 
 let usedQuestions = {
+
 math:[],
 physics:[],
 chemistry:[]
+
 };
 
 
@@ -225,8 +234,6 @@ subject
 const subjectQuestions =
 questionPools[subject];
 
-
-
 if(
 usedQuestions[subject].length
 === subjectQuestions.length
@@ -235,8 +242,6 @@ usedQuestions[subject].length
 usedQuestions[subject] = [];
 
 }
-
-
 
 let randomIndex;
 
@@ -253,167 +258,16 @@ usedQuestions[subject]
 .includes(randomIndex)
 );
 
-
-
 usedQuestions[subject]
 .push(randomIndex);
 
-
-
 const selectedQuestion =
 subjectQuestions[randomIndex];
-
-
 
 document.getElementById(
 "quizQuestion"
 ).innerHTML =
 selectedQuestion;
-async function summarizeNotes(){
-
-const notes =
-document.getElementById(
-"notesInput"
-).value;
-
-const resultBox =
-document.getElementById(
-"resultBox"
-);
-
-resultBox.innerHTML =
-"🤖 AI is summarizing...";
-
-try{
-
-const response =
-await fetch(
-"https://mpc-nexus-ai-f6kt.onrender.com/summarize",
-{
-
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json",
-},
-
-body:JSON.stringify({
-notes:notes,
-}),
-
-}
-);
-
-const data =
-await response.json();
-
-typeEffect(
-data.summary,
-resultBox
-);
-
-}catch(error){
-
-resultBox.innerHTML =
-"❌ Error connecting to AI";
-
-}
-
-}
-
-
-
-function downloadPDF(){
-
-const element =
-document.getElementById(
-"resultBox"
-);
-
-html2pdf()
-.from(element)
-.save("AI_Study_Notes.pdf");
-
-}
-}
-async function solveQuestion(){
-
-const input =
-document.getElementById(
-"questionInput"
-).value;
-
-const box =
-document.getElementById(
-"answerBox"
-);
-
-box.innerHTML =
-"🤖 AI is thinking...";
-
-try{
-
-const response =
-await fetch(
-"https://mpc-nexus-ai-f6kt.onrender.com/ask",
-{
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json",
-},
-
-body:JSON.stringify({
-question:input,
-}),
-
-});
-
-const data =
-await response.json();
-
-typeEffect(
-data.answer,
-box
-);
-
-}catch(error){
-
-box.innerHTML =
-"❌ Error connecting to AI";
-
-}
-
-}
-
-
-
-function typeEffect(
-text,
-element
-){
-
-element.innerHTML = "";
-
-let index = 0;
-
-const interval =
-setInterval(() => {
-
-element.innerHTML +=
-text.charAt(index);
-
-index++;
-
-if(index >= text.length){
-
-clearInterval(interval);
-
-}
-
-},15);
 
 }
 
@@ -477,6 +331,10 @@ resultBox.innerHTML =
 }
 
 
+
+/* =========================
+   PDF DOWNLOAD
+========================= */
 
 function downloadPDF(){
 
